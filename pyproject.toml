@@ -1,0 +1,49 @@
+[build-system]
+requires = ["maturin[patchelf]>=0.12.4"]
+build-backend = "maturin"
+
+
+[project]
+name = "cykooz.rehash"
+version = "0.1"
+description = "A resumable implementation of SHA1 hasher"
+readme = "README.md"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Rust",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: BSD License",
+]
+keywords = ["sha1", "resumable"]
+requires-python = ">=3.7"
+url = "https://github.com/Cykooz/cykooz.rehash"
+
+
+[project.optional-dependencies]
+dev = [
+    "wheel",
+    "maturin[patchelf]",
+    "pytest",
+    'pytest-benchmark',
+    'tabulate',
+    'rehash',
+]
+
+
+[tool.maturin]
+strip = true
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests",
+]

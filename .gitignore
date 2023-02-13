@@ -1,0 +1,8 @@
+/target
+.*
+!/.gitignore
+!/.github
+/tests/data/result
+/cykooz/rehash/*.so
+/cykooz/rehash/*.pyd
+/cykooz/rehash/*.dll

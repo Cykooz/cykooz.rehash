@@ -1,0 +1,169 @@
+name: Run tests and build wheels.
+
+on: [ workflow_dispatch ]
+
+jobs:
+
+  linux:
+    name: Linux
+    strategy:
+      matrix:
+        python-version: [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Install dev packages
+        run: |
+          python -m pip install wheel
+          python -m pip install .[dev]
+
+      - name: Run tests
+        run: |
+          pytest --benchmark-skip -vv
+
+      - name: Build sdist
+        if: ${{ matrix.python-version == '3.11' }}
+        run: |
+          mkdir tmp
+          cp -rf cykooz src Cargo.lock *.toml *.md LICENSE tmp/
+          cd tmp
+          maturin sdist -o ../dist
+          cd ..
+
+      - name: Build Wheels
+        if: ${{ matrix.python-version == '3.11' }}
+        uses: messense/maturin-action@v1
+        with:
+          maturin-version: latest
+          target: x86_64
+          manylinux: auto
+          args: --release --strip --out dist -i 3.7 3.8 3.9 3.10 3.11
+
+      - name: Install built wheel
+        if: ${{ matrix.python-version == '3.11' }}
+        run: |
+          cd dist
+          python -m pip install cykooz.rehash --no-index --find-links ./ --force-reinstall
+          python -c "import cykooz.rehash"
+          cd ..
+
+      - name: Upload wheels
+        if: ${{ matrix.python-version == '3.11' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
+
+
+  windows:
+    name: Windows
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: "x64"
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: "x86_64-pc-windows-msvc"
+          profile: minimal
+          default: true
+
+      - name: Install dev packages
+        run: |
+          python -m pip install wheel
+          python -m pip install .[dev]
+
+      - name: Run tests
+        run: |
+          pytest --benchmark-skip -vv
+
+      - name: Build wheel
+        uses: messense/maturin-action@v1
+        with:
+          target: "x86_64-pc-windows-msvc"
+          args: --release --strip --out dist -i python
+
+      - name: Install built wheel
+        run: |
+          cd dist
+          python -m pip install cykooz.rehash --no-index --find-links . --force-reinstall
+          python -c "import cykooz.rehash"
+          cd ..
+
+      - name: Upload wheel
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
+
+
+  macos:
+    name: MacOS
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: "x86_64-apple-darwin"
+          profile: minimal
+          default: true
+
+      - name: Install dev packages
+        run: |
+          python -m pip install wheel
+          python -m pip install .[dev]
+
+      - name: Run tests
+        run: |
+          pytest --benchmark-skip -vv
+
+      - name: Build wheels - x86_64
+        uses: messense/maturin-action@v1
+        with:
+          target: "x86_64-apple-darwin"
+          args: --release --strip --out dist -i python
+
+      - name: Install built wheel - x86_64
+        run: |
+          cd dist
+          python -m pip install cykooz.rehash --find-links . --force-reinstall
+          python -c "import cykooz.rehash"
+          cd ..
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
