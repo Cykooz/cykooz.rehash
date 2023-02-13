@@ -55,7 +55,10 @@ def test_spray_and_pray():
         hasher.reset()
         for _ in range(50):
             buf_size = random.randint(0, 512)
-            buf = random.randbytes(buf_size)
+            buf = b''.join(
+                random.randint(0, 255).to_bytes(1, 'little')
+                for _ in range(buf_size)
+            )
             hasher.update(buf)
             std_hasher.update(buf)
         assert hasher.digest() == std_hasher.digest()

@@ -1,5 +1,7 @@
 [build-system]
-requires = ["maturin[patchelf]>=0.12.4"]
+requires = [
+    "maturin>=0.12.4",
+]
 build-backend = "maturin"
 
 
@@ -30,11 +32,11 @@ url = "https://github.com/Cykooz/cykooz.rehash"
 [project.optional-dependencies]
 dev = [
     "wheel",
-    "maturin[patchelf]",
+    "maturin",
     "pytest",
-    'pytest-benchmark',
-    'tabulate',
-    'rehash',
+    "pytest-benchmark",
+    "tabulate",
+    "patchelf; sys_platform=='linux'"
 ]
 
 
