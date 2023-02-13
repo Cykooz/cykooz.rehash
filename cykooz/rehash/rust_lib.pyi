@@ -4,7 +4,7 @@ from typing import Optional
 
 class Sha1:
 
-    def __init__(self):
+    def __init__(self, data: Optional[bytes] = None):
         ...
     @property
     def digest_size(self) -> int:

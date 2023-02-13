@@ -9,10 +9,15 @@ pub struct Sha1 {
 #[pymethods]
 impl Sha1 {
     #[new]
-    fn new() -> Self {
-        Self {
-            sha1: sha1_smol_r::Sha1::new(),
+    #[pyo3(signature = (data = None))]
+    fn new(py: Python, data: Option<&[u8]>) -> Self {
+        let mut sha1 = sha1_smol_r::Sha1::new();
+        if let Some(data) = data {
+            py.allow_threads(|| {
+                sha1.update(data);
+            });
         }
+        Self { sha1 }
     }
 
     #[getter]

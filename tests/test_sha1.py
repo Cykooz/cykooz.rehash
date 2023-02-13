@@ -28,6 +28,7 @@ def test_simple(data, digest):
     hasher = Sha1()
     hasher.update(data)
     assert hasher.hexdigest() == digest
+    assert Sha1(data).hexdigest() == digest
 
 
 def test_multiple_updates():
