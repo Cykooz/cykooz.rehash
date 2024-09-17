@@ -18,6 +18,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: x64
 
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
       - uses: Swatinem/rust-cache@v2
         with:
           cache-on-failure: "true"
@@ -77,6 +80,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: "x64"
 
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: "x86_64-pc-windows-msvc"
+
       - uses: Swatinem/rust-cache@v2
         with:
           cache-on-failure: "true"
@@ -122,6 +130,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+
+      - name: Install Rust toolchain x86_64
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          target: "x86_64-apple-darwin"
+
+      - name: Install Rust toolchain aarch64
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          target: "aarch64-apple-darwin"
 
       - uses: Swatinem/rust-cache@v2
         with:
