@@ -46,7 +46,7 @@ impl Sha1 {
     /// Retrieve digest result.
     fn digest(&self, py: Python) -> PyObject {
         let digest = self.sha1.digest().bytes();
-        PyBytes::new(py, &digest).into()
+        PyBytes::new_bound(py, &digest).into()
     }
 
     /// Retrieve digest result as string in hex-format.
@@ -57,7 +57,7 @@ impl Sha1 {
     /// Serialize of hasher state.
     fn serialize(&self, py: Python) -> PyResult<PyObject> {
         let state_size = self.sha1.state_size();
-        PyBytes::new_with(py, state_size, |buffer| {
+        PyBytes::new_bound_with(py, state_size, |buffer| {
             self.sha1.serialize(buffer);
             Ok(())
         })

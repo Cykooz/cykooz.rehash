@@ -5,7 +5,7 @@
 Usage example:
 
 ```python
-from cykooz.rehash import Sha1
+from python.cykooz.rehash import Sha1
 
 
 hasher = Sha1()

@@ -3,6 +3,6 @@
 !/.gitignore
 !/.github
 /tests/data/result
-/cykooz/rehash/*.so
-/cykooz/rehash/*.pyd
-/cykooz/rehash/*.dll
+/python/cykooz/rehash/*.so
+/python/cykooz/rehash/*.pyd
+/python/cykooz/rehash/*.dll

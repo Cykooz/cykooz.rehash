@@ -8,12 +8,12 @@ jobs:
     name: Linux
     strategy:
       matrix:
-        python-version: [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
+        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
@@ -32,25 +32,24 @@ jobs:
           pytest --benchmark-skip -vv
 
       - name: Build sdist
-        if: ${{ matrix.python-version == '3.11' }}
-        run: |
-          mkdir tmp
-          cp -rf cykooz src sha1_smol_r Cargo.lock *.toml *.md LICENSE tmp/
-          cd tmp
-          maturin sdist -o ../dist
-          cd ..
+        if: ${{ matrix.python-version == '3.12' }}
+        uses: PyO3/maturin-action@v1
+        with:
+          maturin-version: latest
+          command: sdist
+          before-script-linux: rm -rf ".github" "tests" ".gitignore"
+          args: --out dist
 
       - name: Build Wheels
-        if: ${{ matrix.python-version == '3.11' }}
-        uses: messense/maturin-action@v1
+        uses: PyO3/maturin-action@v1
         with:
           maturin-version: latest
           target: x86_64
           manylinux: auto
-          args: --release --strip --out dist -i 3.7 3.8 3.9 3.10 3.11
+          args: --release --strip --out dist -i ${{ matrix.python-version }}
 
       - name: Install built wheel
-        if: ${{ matrix.python-version == '3.11' }}
+        if: ${{ matrix.python-version == '3.12' }}
         run: |
           cd dist
           python -m pip install cykooz.rehash --no-index --find-links ./ --force-reinstall
@@ -58,10 +57,9 @@ jobs:
           cd ..
 
       - name: Upload wheels
-        if: ${{ matrix.python-version == '3.11' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: wheels_lin-${{ matrix.python-version }}
           path: dist
 
 
@@ -70,11 +68,11 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
+        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           architecture: "x64"
@@ -106,9 +104,9 @@ jobs:
           cd ..
 
       - name: Upload wheel
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: wheels_win-${{ matrix.python-version }}
           path: dist
 
 
@@ -117,11 +115,11 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
+        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -152,7 +150,17 @@ jobs:
           cd ..
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels_mac-${{ matrix.python-version }}
+          path: dist
+
+  wheels:
+    runs-on: ubuntu-latest
+    needs: [ linux, windows, macos ]
+    steps:
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
         with:
           name: wheels
-          path: dist
+          delete-merged: true
