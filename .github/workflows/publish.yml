@@ -155,12 +155,18 @@ jobs:
           pytest --benchmark-skip -vv
 
       - name: Build wheels - x86_64
-        uses: messense/maturin-action@v1
+        uses: PyO3/maturin-action@v1
         with:
           target: "x86_64-apple-darwin"
           args: --release --strip --out dist -i python
 
-      - name: Install built wheel - x86_64
+      - name: Build wheels - aarch64
+        uses: PyO3/maturin-action@v1
+        with:
+          target: "aarch64-apple-darwin"
+          args: --release --strip --out dist -i python
+
+      - name: Install built wheel
         run: |
           cd dist
           python -m pip install cykooz.rehash --find-links . --force-reinstall
