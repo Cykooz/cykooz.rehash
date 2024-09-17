@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [1.0.1] - 2024-09-17
+
+- Fixed example code in README.md.
+
 ## [1.0.0] - 2024-09-17
 
 - Updated all dependencies.

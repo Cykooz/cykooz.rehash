@@ -5,7 +5,7 @@ build-backend = "maturin"
 
 [project]
 name = "cykooz.rehash"
-version = "1.0.0"
+version = "1.0.1"
 description = "A resumable implementation of SHA1 hasher"
 readme = "README.md"
 classifiers = [
