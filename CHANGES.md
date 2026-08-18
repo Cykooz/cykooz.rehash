@@ -3,7 +3,7 @@
 ## [2.0.0] - 2026-08-19
 
 - **BREAKING CHANGES:**
-    - Package renamed from `cykooz.hasher` to `cykooz_hasher`.
+    - Package renamed from `cykooz.rehash` to `cykooz_rehash`.
   - Dropped support for Python 3.8 and Python 3.9.
 - Updated all dependencies.
 - Added wheel building for Python 3.13 and Python 3.14.
