@@ -13,7 +13,7 @@ impl Sha1 {
     fn new(py: Python, data: Option<&[u8]>) -> Self {
         let mut sha1 = sha1_smol_r::Sha1::new();
         if let Some(data) = data {
-            py.allow_threads(|| {
+            py.detach(|| {
                 sha1.update(data);
             });
         }
@@ -38,15 +38,15 @@ impl Sha1 {
     /// Update hash with input data.
     #[pyo3(signature = (data))]
     fn update(&mut self, py: Python, data: &[u8]) {
-        py.allow_threads(move || {
+        py.detach(move || {
             self.sha1.update(data);
         });
     }
 
     /// Retrieve digest result.
-    fn digest(&self, py: Python) -> PyObject {
+    fn digest<'py>(&self, py: Python<'py>) -> Bound<'py, PyBytes> {
         let digest = self.sha1.digest().bytes();
-        PyBytes::new_bound(py, &digest).into()
+        PyBytes::new(py, &digest)
     }
 
     /// Retrieve digest result as string in hex-format.
@@ -55,13 +55,12 @@ impl Sha1 {
     }
 
     /// Serialize of hasher state.
-    fn serialize(&self, py: Python) -> PyResult<PyObject> {
+    fn serialize<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyBytes>> {
         let state_size = self.sha1.state_size();
-        PyBytes::new_bound_with(py, state_size, |buffer| {
+        PyBytes::new_with(py, state_size, |buffer| {
             self.sha1.serialize(buffer);
             Ok(())
         })
-        .map(|bytes| bytes.to_object(py))
     }
 
     /// Deserialize of hasher from state.

@@ -1,11 +1,11 @@
-# cykooz.rehash
+# cykooz-rehash
 
 `cykooz.rehash` is a resumable implementation of SHA1 hasher.
 
 Usage example:
 
 ```python
-from cykooz.rehash import Sha1
+from cykooz_rehash import Sha1
 
 
 hasher = Sha1()

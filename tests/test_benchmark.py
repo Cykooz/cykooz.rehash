@@ -7,7 +7,7 @@ import hashlib
 import pytest
 from pytest_benchmark.stats import Metadata
 
-from cykooz.rehash import Sha1
+from cykooz_rehash import Sha1
 from utils import BenchResults
 
 

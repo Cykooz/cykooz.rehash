@@ -6,12 +6,9 @@ keywords = ["sha1"]
 description = "Minimal dependency free implementation of SHA1 for Rust."
 license = "BSD-3-Clause"
 repository = "https://github.com/mitsuhiko/sha1-smol"
-edition = "2021"
-
-[dependencies]
+edition = "2024"
 
 
 [dev-dependencies]
 openssl = "0.10"
-rand = "0.8"
-glassbench = "0.4.3"
+rand = "0.10.2"

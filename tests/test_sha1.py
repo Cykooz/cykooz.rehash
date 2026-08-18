@@ -7,7 +7,7 @@ import random
 
 import pytest
 
-from cykooz.rehash import Sha1
+from cykooz_rehash import Sha1
 
 
 @pytest.mark.parametrize(

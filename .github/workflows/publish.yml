@@ -8,12 +8,12 @@ jobs:
     name: Linux
     strategy:
       matrix:
-        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
+        python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
@@ -48,19 +48,20 @@ jobs:
         with:
           maturin-version: latest
           target: x86_64
-          manylinux: auto
-          args: --release --strip --out dist -i ${{ matrix.python-version }}
+          manylinux: 2_34
+          args: --release --strip --compatibility pypi --auditwheel repair --out dist -i ${{ matrix.python-version }}
+
 
       - name: Install built wheel
         if: ${{ matrix.python-version == '3.12' }}
         run: |
           cd dist
-          python -m pip install cykooz.rehash --no-index --find-links ./ --force-reinstall
-          python -c "import cykooz.rehash"
+          python -m pip install cykooz-rehash --no-index --find-links ./ --force-reinstall
+          python -c "import cykooz_rehash"
           cd ..
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheels_lin-${{ matrix.python-version }}
           path: dist
@@ -71,11 +72,11 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
+        python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           architecture: "x64"
@@ -102,17 +103,17 @@ jobs:
         uses: messense/maturin-action@v1
         with:
           target: "x86_64-pc-windows-msvc"
-          args: --release --strip --out dist -i python
+          args: --release --strip --compatibility pypi --out dist -i python
 
       - name: Install built wheel
         run: |
           cd dist
-          python -m pip install cykooz.rehash --no-index --find-links . --force-reinstall
-          python -c "import cykooz.rehash"
+          python -m pip install cykooz-rehash --no-index --find-links . --force-reinstall
+          python -c "import cykooz_rehash"
           cd ..
 
       - name: Upload wheel
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheels_win-${{ matrix.python-version }}
           path: dist
@@ -123,11 +124,11 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
+        python-version: [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -158,23 +159,23 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: "x86_64-apple-darwin"
-          args: --release --strip --out dist -i python
+          args: --release --strip --compatibility pypi --out dist -i python
 
       - name: Build wheels - aarch64
         uses: PyO3/maturin-action@v1
         with:
           target: "aarch64-apple-darwin"
-          args: --release --strip --out dist -i python
+          args: --release --strip --compatibility pypi --out dist -i python
 
       - name: Install built wheel
         run: |
           cd dist
-          python -m pip install cykooz.rehash --find-links . --force-reinstall
-          python -c "import cykooz.rehash"
+          python -m pip install cykooz-rehash --find-links . --force-reinstall
+          python -c "import cykooz_rehash"
           cd ..
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheels_mac-${{ matrix.python-version }}
           path: dist

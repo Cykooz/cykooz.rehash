@@ -285,18 +285,19 @@ mod tests {
 
     #[test]
     fn spray_and_pray() {
-        use rand::{Rng, RngCore};
+        use rand::{Rng, RngExt};
 
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         let mut m = Sha1::new();
         let mut bytes = [0; 512];
+        let bytes_len = bytes.len() as u32;
 
         for _ in 0..20 {
             let ty = openssl::hash::MessageDigest::sha1();
             let mut r = openssl::hash::Hasher::new(ty).unwrap();
             m.reset();
             for _ in 0..50 {
-                let len = rng.gen::<usize>() % bytes.len();
+                let len = (rng.random::<u32>() % bytes_len) as usize;
                 rng.fill_bytes(&mut bytes[..len]);
                 m.update(&bytes[..len]);
                 r.update(&bytes[..len]).unwrap();

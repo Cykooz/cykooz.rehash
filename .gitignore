@@ -2,7 +2,8 @@
 .*
 !/.gitignore
 !/.github
+!/.ruff.toml
 /tests/data/result
-/python/cykooz/rehash/*.so
-/python/cykooz/rehash/*.pyd
-/python/cykooz/rehash/*.dll
+/python/cykooz_rehash/*.so
+/python/cykooz_rehash/*.pyd
+/python/cykooz_rehash/*.dll
