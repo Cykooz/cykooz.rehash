@@ -24,7 +24,11 @@ classifiers = [
 ]
 keywords = ["sha1", "resumable"]
 requires-python = ">=3.10"
-url = "https://github.com/Cykooz/cykooz.rehash"
+
+
+[project.urls]
+Homepage = "https://github.com/Cykooz/cykooz.rehash"
+Repository = "https://github.com/Cykooz/cykooz.rehash"
 
 
 [project.optional-dependencies]
